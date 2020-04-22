@@ -1,8 +1,11 @@
 <resources>
 
+    <string name="app_name">Single Sign-On</string>
     <string name="welcome">Welcome.</string>
     <string name="sub_welcome">To test single sign-on technology, please sign in with your personal information</string>
     <string name="sub_signedin">You are now signed in as Username, you need to sign out before signing in as different user.</string>
     <string name="signin_button">Sign me in</string>
     <string name="signout_button">Sign out</string>
+    <string name="username_placeholder">Username</string>
+    <string name="password_placeholder">Password</string>
 </resources>
