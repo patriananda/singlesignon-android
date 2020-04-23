@@ -29,7 +29,6 @@ public class SignInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signin);
         this.setTitle("Welcome.");
-
     }
 
     @SuppressLint("HardwareIds")
@@ -47,7 +46,7 @@ public class SignInActivity extends AppCompatActivity {
 
                 connection = new LDAPConnection(address, port, "cn=" + username + ",ou=users,dc=example,dc=com", password);
 
-                /* ADD LDAP*/
+                // add an entry on LDAP Server
                 Attribute[] attributes =
                     {
                         new Attribute("objectClass", "top", "person", "inetOrgPerson"),
@@ -58,6 +57,7 @@ public class SignInActivity extends AppCompatActivity {
                 connection.add("l=connected,cn=" + username + ",ou=users,dc=example,dc=com", attributes);
 
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                // mengoper username ke intent selanjutnya yaitu MainActivity
                 intent.putExtra("username", username);
                 startActivity(intent);
 
@@ -71,4 +71,3 @@ public class SignInActivity extends AppCompatActivity {
         }
     }
 }
-
