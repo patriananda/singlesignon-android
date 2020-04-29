@@ -7,27 +7,39 @@
     android:background="@color/colorBlack"
     tools:context=".SignInActivity">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="314dp"
-        android:layout_height="38dp"
-        android:text="@string/sub_welcome"
-        android:textColor="@color/colorWhite"
-        app:layout_constraintBottom_toTopOf="@+id/editTextUsername"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
+            android:paddingTop="150dp">
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="320dp"
+                android:layout_height="wrap_content"
+                android:text="@string/sub_welcome"
+                android:textAlignment="center"
+                android:textColor="@color/colorWhite" />
+        </LinearLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <EditText
         android:id="@+id/editTextUsername"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/colorPrimary"
         android:backgroundTint="@color/colorPrimaryDark"
-        android:hint="@string/username_placeholder"
-        android:textColorHint="@color/colorGrey"
-        android:padding="18dp"
         android:ems="10"
+        android:hint="@string/username_placeholder"
         android:inputType="textPersonName"
+        android:padding="18dp"
+        android:textColor="@color/colorPrimary"
+        android:textColorHint="@color/colorGrey"
         app:layout_constraintBottom_toTopOf="@+id/editTextPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -36,14 +48,14 @@
         android:id="@+id/editTextPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/colorPrimary"
-        android:backgroundTint="@color/colorPrimaryDark"
-        android:hint="@string/password_placeholder"
-        android:textColorHint="@color/colorGrey"
-        android:padding="18dp"
         android:layout_marginBottom="50dp"
+        android:backgroundTint="@color/colorPrimaryDark"
         android:ems="10"
+        android:hint="@string/password_placeholder"
         android:inputType="textPassword"
+        android:padding="18dp"
+        android:textColor="@color/colorPrimary"
+        android:textColorHint="@color/colorGrey"
         app:layout_constraintBottom_toTopOf="@+id/buttonSignIn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -62,4 +74,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

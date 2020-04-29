@@ -7,16 +7,20 @@
     android:background="@color/colorBlack"
     tools:context=".MainActivity">
 
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
     <TextView
         android:id="@+id/textViewSubWelcome"
         android:layout_width="294dp"
         android:layout_height="42dp"
         android:layout_marginBottom="50dp"
         android:textColor="@color/colorWhite"
-        app:layout_constraintBottom_toTopOf="@+id/buttonSignOut"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:gravity="center" />
 
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     <Button
         android:id="@+id/buttonSignOut"
         android:layout_width="wrap_content"

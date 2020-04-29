@@ -5,11 +5,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.unboundid.ldap.sdk.LDAPConnection;
 import com.unboundid.ldap.sdk.LDAPException;
@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
     String rootPassword = "secret";
     String username = "";
     TextView textView;
+    SwipeRefreshLayout refreshLayout;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -37,6 +38,18 @@ public class MainActivity extends AppCompatActivity {
             textView = findViewById(R.id.textViewSubWelcome);
             textView.setText("You are now signed in as " + username.substring(0, 1).toUpperCase() + username.substring(1) + ", you need to sign out before signing in as different user.");
         }
+
+        refreshLayout = findViewById(R.id.swipeRefresh);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // agar loading ga muter terus pas refresh
+                refreshLayout.setRefreshing(false);
+
+                Intent intent = new Intent(getApplicationContext(), AuthActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     public void onClickSignOutButton(View view) throws LDAPException {
@@ -53,24 +66,5 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
     }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-
-            case R.id.action_favorite:
-                // User chose the "Favorite" action, mark the current item
-                // as a favorite...
-                return true;
-
-            default:
-                // If we got here, the user's action was not recognized.
-                // Invoke the superclass to handle it.
-                return super.onOptionsItemSelected(item);
-
-        }
-    }
-
-
 
 }

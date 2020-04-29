@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.unboundid.ldap.sdk.Attribute;
 import com.unboundid.ldap.sdk.LDAPConnection;
@@ -23,12 +24,25 @@ public class SignInActivity extends AppCompatActivity {
     LDAPConnection connection;
     String username;
 
+    SwipeRefreshLayout refreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signin);
         this.setTitle("Welcome.");
+
+        refreshLayout = findViewById(R.id.swipeRefresh);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // agar loading ga muter terus pas refresh
+                refreshLayout.setRefreshing(false);
+
+                Intent intent = new Intent(getApplicationContext(), AuthActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @SuppressLint("HardwareIds")
