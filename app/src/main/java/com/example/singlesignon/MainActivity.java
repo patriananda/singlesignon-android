@@ -56,15 +56,15 @@ public class MainActivity extends AppCompatActivity {
         Log.d("onClickSignOutButton", "salah bro");
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-        // still error binding to LDAP
+
         LDAPConnection connection = new LDAPConnection(address, port, rootDN, rootPassword);
         SearchResult searchResult = connection.search("ou=users,dc=example,dc=com", SearchScope.SUB, "(&(l=connected)(sn=" + username + "))");
         if (searchResult.getEntryCount() == 1) {
             connection.delete("l=connected,cn=" + username + ",ou=users,dc=example,dc=com");
-
-            Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
-            startActivity(intent);
         }
+
+        Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
+        startActivity(intent);
     }
 
 }
