@@ -37,6 +37,10 @@ public class AsyncLDAPSearch extends AsyncTask<String, Void, String> {
             // search imei registered on DN
             SearchResult searchResult = conn.search("ou=users,dc=example,dc=com", DEFAULT_SCOPE, "(uid=" + imei + ")");
 
+            if (searchResult.getEntryCount() < 1) {
+                throw new LDAPException(searchResult);
+            }
+
             for (SearchResultEntry entry : searchResult.getSearchEntries()) {
                 // log entries with imei registered
                 Log.i("DN", entry.getDN());
@@ -56,9 +60,16 @@ public class AsyncLDAPSearch extends AsyncTask<String, Void, String> {
                 }
             }
         } catch (LDAPException e) {
-            Log.d("Error", "cannot connect");
-            e.printStackTrace();
-            return "Error Connection";
+            if (e.getResultCode().intValue() == 91) { // used in line  above, process connecting and binding
+                e.printStackTrace();
+                return "Error Connecting";
+            } else if (e.getResultCode().intValue() == 0) { // used in line 68 above, user with this device not found
+                e.printStackTrace();
+                return "Imei not registered";
+            } else {
+                e.printStackTrace();
+                return "Something went wrong";
+            }
         }
 
         // return the username, then move from this method to next method (onPostExecute)
@@ -67,8 +78,17 @@ public class AsyncLDAPSearch extends AsyncTask<String, Void, String> {
 
     @Override
     protected void onPostExecute(String result) {
-        if (result.equals("Error Connection")) {
-            System.exit(0);
+        switch (result) {
+            case "Something went wrong":
+                System.exit(0);
+            case "Error Connecting":
+                Toast.makeText(context, "Cannot connect to the server", Toast.LENGTH_LONG).show();
+                result = "";
+                break;
+            case "Imei not registered":
+                Toast.makeText(context, "This smartphone imei is not registered on the server", Toast.LENGTH_LONG).show();
+                result = "";
+                break;
         }
 
         Intent intent = new Intent(context, SignInActivity.class);
@@ -77,9 +97,6 @@ public class AsyncLDAPSearch extends AsyncTask<String, Void, String> {
         if (!"".equals(result)) {
             intent = new Intent(context, MainActivity.class);
             intent.putExtra("username", result);
-        } else {
-            Log.d("Error", "Unregisered imei");
-            Toast.makeText(context, "This smartphone imei is not registered on the server", Toast.LENGTH_LONG).show();
         }
 
         intent.putExtra("imei", imei);
