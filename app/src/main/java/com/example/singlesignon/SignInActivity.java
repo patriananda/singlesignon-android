@@ -14,15 +14,17 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.unboundid.ldap.sdk.Attribute;
 import com.unboundid.ldap.sdk.LDAPConnection;
 import com.unboundid.ldap.sdk.LDAPException;
+import com.unboundid.ldap.sdk.SearchResult;
+import com.unboundid.ldap.sdk.SearchScope;
 
 public class SignInActivity extends AppCompatActivity {
 
     String address = "10.0.2.2";
     int port = 10389;
-    boolean login_flag = true;
 
     LDAPConnection connection;
     String username;
+    String imei;
 
     SwipeRefreshLayout refreshLayout;
 
@@ -43,6 +45,11 @@ public class SignInActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        if (getIntent().getExtras() != null) {
+            imei = getIntent().getStringExtra("imei");
+        }
+
     }
 
     @SuppressLint("HardwareIds")
@@ -53,6 +60,14 @@ public class SignInActivity extends AppCompatActivity {
             StrictMode.setThreadPolicy(policy);
 
             try {
+                connection = new LDAPConnection(address, port);
+                // search imei registered on DN
+                SearchResult searchResult = connection.search("ou=users,dc=example,dc=com", SearchScope.SUB, "(uid=" + imei + ")");
+
+                if (searchResult.getEntryCount() < 1) {
+                    throw new LDAPException(searchResult); // melempar dari try ke catch
+                }
+
                 final EditText editTextUsername = findViewById(R.id.editTextUsername);
                 final EditText editTextPassword = findViewById(R.id.editTextPassword);
                 username = editTextUsername.getText().toString();
@@ -76,9 +91,15 @@ public class SignInActivity extends AppCompatActivity {
                 startActivity(intent);
 
             } catch (LDAPException e) {
-                login_flag = false;
-                e.printStackTrace();
-                Toast.makeText(getBaseContext(), "Invalid username or password", Toast.LENGTH_LONG).show();
+                if (e.getResultCode().intValue() == 91) { // used in line 76 above, process connecting and binding
+                    Toast.makeText(getBaseContext(), "Cannot connect to the server", Toast.LENGTH_LONG).show();
+                } else if (e.getResultCode().intValue() == 0) { // used in line 68 above, user with this device not found
+                    Toast.makeText(getBaseContext(), "Can't sign in from this device", Toast.LENGTH_LONG).show();
+                } else {
+                    e.printStackTrace();
+                    Toast.makeText(getBaseContext(), "Invalid username or password", Toast.LENGTH_LONG).show();
+                }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }

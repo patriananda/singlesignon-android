@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.unboundid.ldap.sdk.LDAPConnection;
 import com.unboundid.ldap.sdk.LDAPException;
@@ -17,6 +18,7 @@ public class AsyncLDAPSearch extends AsyncTask<String, Void, String> {
     private static String DEFAULT_HOST = "10.0.2.2";
     private static int DEFAULT_PORT = 10389;
     private static SearchScope DEFAULT_SCOPE = SearchScope.SUB;
+    private String imei;
 
     AsyncLDAPSearch(Context context) {
         this.context = context;
@@ -24,7 +26,7 @@ public class AsyncLDAPSearch extends AsyncTask<String, Void, String> {
 
     @Override
     protected String doInBackground(String... args) {
-        String imei = args[0];
+        imei = args[0];
 
         String username = "";
 
@@ -54,8 +56,9 @@ public class AsyncLDAPSearch extends AsyncTask<String, Void, String> {
                 }
             }
         } catch (LDAPException e) {
-            Log.i("doInBG", "ga bisa konek LDAP bro");
+            Log.d("Error", "cannot connect");
             e.printStackTrace();
+            return "Error Connection";
         }
 
         // return the username, then move from this method to next method (onPostExecute)
@@ -64,14 +67,22 @@ public class AsyncLDAPSearch extends AsyncTask<String, Void, String> {
 
     @Override
     protected void onPostExecute(String result) {
+        if (result.equals("Error Connection")) {
+            System.exit(0);
+        }
+
         Intent intent = new Intent(context, SignInActivity.class);
 
         // if username had passed not empty, go to index
         if (!"".equals(result)) {
             intent = new Intent(context, MainActivity.class);
             intent.putExtra("username", result);
+        } else {
+            Log.d("Error", "Unregisered imei");
+            Toast.makeText(context, "This smartphone imei is not registered on the server", Toast.LENGTH_LONG).show();
         }
 
+        intent.putExtra("imei", imei);
         // aplikasi yang jalanin activity bukan activity lain dalam aplikasi
         context.startActivity(intent);
     }

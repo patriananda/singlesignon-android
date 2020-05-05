@@ -53,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClickSignOutButton(View view) throws LDAPException {
-        Log.d("onClickSignOutButton", "salah bro");
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
@@ -61,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         SearchResult searchResult = connection.search("ou=users,dc=example,dc=com", SearchScope.SUB, "(&(l=connected)(sn=" + username + "))");
         if (searchResult.getEntryCount() == 1) {
             connection.delete("l=connected,cn=" + username + ",ou=users,dc=example,dc=com");
+            Log.d("onClickSignOutButton", "salah bro");
         }
 
         Intent intent = new Intent(getApplicationContext(), SignInActivity.class);

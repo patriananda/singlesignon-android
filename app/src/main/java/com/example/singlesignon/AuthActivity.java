@@ -37,7 +37,7 @@ public class AuthActivity extends AppCompatActivity {
         assert telephonyManager != null;
         imei = telephonyManager.getImei();
 
-        Toast.makeText(getBaseContext(), imei, Toast.LENGTH_LONG).show();
+        Toast.makeText(getBaseContext(), imei, Toast.LENGTH_SHORT).show();
         // membuat dan langsung execute AsyncLDAPSearch dengan membawa parameter imei
         asyncTaskLDAP = new AsyncLDAPSearch(getApplicationContext()).execute(imei);
     }
