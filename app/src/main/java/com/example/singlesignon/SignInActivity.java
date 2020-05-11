@@ -2,6 +2,7 @@ package com.example.singlesignon;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.View;
@@ -14,7 +15,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.unboundid.ldap.sdk.Attribute;
 import com.unboundid.ldap.sdk.LDAPConnection;
 import com.unboundid.ldap.sdk.LDAPException;
+import com.unboundid.ldap.sdk.ResultCode;
 import com.unboundid.ldap.sdk.SearchResult;
+import com.unboundid.ldap.sdk.SearchResultEntry;
 import com.unboundid.ldap.sdk.SearchScope;
 
 public class SignInActivity extends AppCompatActivity {
@@ -54,7 +57,7 @@ public class SignInActivity extends AppCompatActivity {
 
     @SuppressLint("HardwareIds")
     public void onClickSignInButton(View view) {
-        int SDK_INT = android.os.Build.VERSION.SDK_INT;
+        int SDK_INT = Build.VERSION.SDK_INT;
         if (SDK_INT > 8) {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
@@ -72,6 +75,16 @@ public class SignInActivity extends AppCompatActivity {
                 final EditText editTextPassword = findViewById(R.id.editTextPassword);
                 username = editTextUsername.getText().toString();
                 String password = editTextPassword.getText().toString();
+
+                // ambil username dari dn searchResult line 68
+                String userDN = null;
+                for (SearchResultEntry entry : searchResult.getSearchEntries()) {
+                    String[] attributeList = entry.getDN().split(",");
+                    userDN = attributeList[2].substring(3);
+                }
+                if (!username.equals(userDN)) {
+                    throw new LDAPException(ResultCode.valueOf(0));
+                }
 
                 connection = new LDAPConnection(address, port, "cn=" + username + ",ou=users,dc=example,dc=com", password);
 
@@ -91,9 +104,9 @@ public class SignInActivity extends AppCompatActivity {
                 startActivity(intent);
 
             } catch (LDAPException e) {
-                if (e.getResultCode().intValue() == 91) { // used in line 76 above, process connecting and binding
+                if (e.getResultCode().intValue() == 91) { // used in line 89 above, process connecting and binding
                     Toast.makeText(getBaseContext(), "Cannot connect to the server", Toast.LENGTH_LONG).show();
-                } else if (e.getResultCode().intValue() == 0) { // used in line 68 above, user with this device not found
+                } else if (e.getResultCode().intValue() == 0) { // used in line 71 above, user with this device not found
                     Toast.makeText(getBaseContext(), "Can't sign in from this device", Toast.LENGTH_LONG).show();
                 } else {
                     e.printStackTrace();

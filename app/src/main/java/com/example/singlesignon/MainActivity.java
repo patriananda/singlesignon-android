@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d("onClickSignOutButton", "salah bro");
         }
 
-        Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
+        Intent intent = new Intent(getApplicationContext(), AuthActivity.class);
         startActivity(intent);
     }
 
