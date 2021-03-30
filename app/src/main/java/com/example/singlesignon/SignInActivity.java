@@ -22,7 +22,7 @@ import com.unboundid.ldap.sdk.SearchScope;
 
 public class SignInActivity extends AppCompatActivity {
 
-    String address = "10.0.2.2";
+    String address = "103.214.112.199";
     int port = 10389;
 
     LDAPConnection connection;
@@ -45,6 +45,7 @@ public class SignInActivity extends AppCompatActivity {
                 refreshLayout.setRefreshing(false);
 
                 Intent intent = new Intent(getApplicationContext(), AuthActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
             }
         });
@@ -101,6 +102,7 @@ public class SignInActivity extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 // mengoper username ke intent selanjutnya yaitu MainActivity
                 intent.putExtra("username", username);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
 
             } catch (LDAPException e) {
@@ -108,6 +110,8 @@ public class SignInActivity extends AppCompatActivity {
                     Toast.makeText(getBaseContext(), "Cannot connect to the server", Toast.LENGTH_LONG).show();
                 } else if (e.getResultCode().intValue() == 0) { // used in line 71 above, user with this device not found
                     Toast.makeText(getBaseContext(), "Can't sign in from this device", Toast.LENGTH_LONG).show();
+                } else if (e.getResultCode().intValue() == 68) { // used in line 71 above, user with this device not found
+                    Toast.makeText(getBaseContext(), "Already signed in, pull down to refresh", Toast.LENGTH_LONG).show();
                 } else {
                     e.printStackTrace();
                     Toast.makeText(getBaseContext(), "Invalid username or password", Toast.LENGTH_LONG).show();

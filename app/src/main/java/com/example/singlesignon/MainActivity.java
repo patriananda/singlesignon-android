@@ -17,7 +17,7 @@ import com.unboundid.ldap.sdk.SearchResult;
 import com.unboundid.ldap.sdk.SearchScope;
 
 public class MainActivity extends AppCompatActivity {
-    String address = "10.0.2.2";
+    String address = "103.214.112.199";
     int port = 10389;
     String rootDN = "uid=admin,ou=system";
     String rootPassword = "secret";
@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
                 refreshLayout.setRefreshing(false);
 
                 Intent intent = new Intent(getApplicationContext(), AuthActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
             }
         });
@@ -64,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         Intent intent = new Intent(getApplicationContext(), AuthActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
 

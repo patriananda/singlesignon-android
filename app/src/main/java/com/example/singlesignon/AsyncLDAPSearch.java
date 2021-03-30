@@ -15,7 +15,7 @@ import com.unboundid.ldap.sdk.SearchScope;
 public class AsyncLDAPSearch extends AsyncTask<String, Void, String> {
     private Context context;
 
-    private static String DEFAULT_HOST = "10.0.2.2";
+    private static String DEFAULT_HOST = "103.214.112.199";
     private static int DEFAULT_PORT = 10389;
     private static SearchScope DEFAULT_SCOPE = SearchScope.SUB;
     private String imei;
@@ -92,6 +92,7 @@ public class AsyncLDAPSearch extends AsyncTask<String, Void, String> {
         }
 
         Intent intent = new Intent(context, SignInActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         // if username had passed not empty, go to index
         if (!"".equals(result)) {
